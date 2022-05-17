@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/ExampleLength,RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups
 RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                :config do
   let(:msg) { 'Freeze mutable objects assigned to class instance variables.' }
   let(:prefix) { nil }
   let(:suffix) { nil }
   let(:indent) { '' }
+
   def surround(code)
     [
       prefix,
@@ -53,11 +55,11 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
   end
 
   context 'when not directly in class / module' do
-    context 'top level code' do
+    describe 'top level code' do
       it_behaves_like 'immutable objects', '[1, 2, 3]'
     end
 
-    context 'inside a method' do
+    describe 'inside a method' do
       let(:prefix) { "class Test\n  def some_method" }
       let(:suffix) { "  end\nend" }
       let(:indent) { '    ' }
@@ -65,7 +67,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
       it_behaves_like 'immutable objects', '{ a: 1, b: 2 }'
     end
 
-    context 'inside a class method' do
+    describe 'inside a class method' do
       let(:prefix) { "class Test\n  def self.some_method" }
       let(:suffix) { "  end\nend" }
       let(:indent) { '    ' }
@@ -73,7 +75,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
       it_behaves_like 'immutable objects', '%w(a b c)'
     end
 
-    context 'inside a class singleton method' do
+    describe 'inside a class singleton method' do
       let(:prefix) do
         <<~RUBY
           class Test
@@ -93,7 +95,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
       it_behaves_like 'immutable objects', '%i{a b c}'
     end
 
-    context 'inside define_singleton_method' do
+    describe 'inside define_singleton_method' do
       let(:prefix) { "class Test\n  define_singleton_method(:name) do" }
       let(:suffix) { "  end\nend" }
       let(:indent) { '    ' }
@@ -101,7 +103,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
       it_behaves_like 'immutable objects', '[1, 2]'
     end
 
-    context 'inside define_method' do
+    describe 'inside define_method' do
       let(:prefix) { "class Test\n  define_method(:name) do" }
       let(:suffix) { "  end\nend" }
       let(:indent) { '    ' }
@@ -110,11 +112,11 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
     end
   end
 
-  context 'Strict: false' do
+  context 'with Strict: false' do
     let(:cop_config) { { 'EnforcedStyle' => 'literals' } }
 
     %w[class module].each do |mod|
-      context "inside a #{mod}" do
+      context "when inside a #{mod}" do
         let(:prefix) { "#{mod} Test" }
         let(:suffix) { 'end' }
         let(:indent) { '  ' }
@@ -141,7 +143,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           expect_no_offenses(surround('@@list = [1, 2]'))
         end
 
-        context 'inside an if statement' do
+        describe 'inside an if statement' do
           let(:prefix) { "#{mod} Test\n  if something" }
           let(:suffix) { "  end\nend" }
           let(:indent) { '    ' }
@@ -149,8 +151,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           it_behaves_like 'mutable objects', '[1, 2, 3]'
         end
 
-        context 'splat expansion' do
-          context 'expansion of a range' do
+        context 'with splat expansion' do
+          context 'with expansion of a range' do
             it 'registers an offense' do
               expect_offense(surround(<<~RUBY))
                 @var = *1..10
@@ -358,11 +360,11 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
     end
   end
 
-  context 'Strict: true' do
+  context 'with Strict: true' do
     let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
     %w[class module].each do |mod|
-      context "inside a #{mod}" do
+      context "when inside a #{mod}" do
         let(:prefix) { "#{mod} Test" }
         let(:suffix) { 'end' }
         let(:indent) { '  ' }
@@ -440,7 +442,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           expect_no_offenses(surround('@@list = [1, 2]'))
         end
 
-        context 'inside an if statement' do
+        describe 'inside an if statement' do
           let(:prefix) { "#{mod} Test\n  if something" }
           let(:suffix) { "  end\nend" }
           let(:indent) { '    ' }
@@ -448,8 +450,8 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           it_behaves_like 'mutable objects', '[1, 2, 3]'
         end
 
-        context 'splat expansion' do
-          context 'expansion of a range' do
+        context 'with splat expansion' do
+          context 'with expansion of a range' do
             it 'registers an offense' do
               expect_offense(surround(<<~RUBY))
                 @var = *1..10
@@ -517,7 +519,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
         end
 
-        context 'methods and operators that produce frozen objects' do
+        context 'with methods and operators that produce frozen objects' do
           it_behaves_like 'immutable objects', "ENV['foo'] || 'bar'"
           it_behaves_like 'immutable objects', 'FOO + 2'
           it_behaves_like 'immutable objects', '1 + 2'
@@ -535,7 +537,7 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
           end
         end
 
-        context 'operators that produce unfrozen objects' do
+        context 'with operators that produce unfrozen objects' do
           it 'registers an offense when operating on a constant and a string' do
             expect_offense(surround(<<~RUBY))
               @var = FOO + 'bar'
@@ -666,3 +668,4 @@ RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength,RSpec/MultipleMemoizedHelpers,RSpec/NestedGroups

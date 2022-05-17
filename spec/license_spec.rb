@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'the LICENSE' do
+RSpec.describe 'the LICENSE' do # rubocop:disable RSpec/DescribeClass
   let(:license) { Pathname('LICENSE.txt') }
 
   it 'exists' do

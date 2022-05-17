@@ -36,7 +36,7 @@ Scan the application for just thread-safety issues:
 
 ### Configuration
 
-There are some added [configuration options](https://github.com/covermymeds/rubocop-thread_safety/blob/master/config/default.yml) that can be tweaked to modify the behaviour of these thread-safety cops.
+There are some added [configuration options](https://github.com/rubocop/rubocop-thread_safety/blob/master/config/default.yml) that can be tweaked to modify the behaviour of these thread-safety cops.
 
 ### Correcting code for thread-safety
 
@@ -68,9 +68,11 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/covermymeds/rubocop-thread_safety.
+Bug reports and pull requests are welcome on GitHub at https://github.com/rubocop/rubocop-thread_safety.
 
 ## Copyright
 
-Copyright (c) 2016-2022 CoverMyMeds.
+Portions Copyright (c) 2016-2022 Michael Gee and [contributors](https://github.com/rubocop/rubocop-thread_safety/graphs/contributors).
+Portions Copyright (c) 2016-2022 CoverMyMeds.
+
 See [LICENSE.txt](LICENSE.txt) for further details.

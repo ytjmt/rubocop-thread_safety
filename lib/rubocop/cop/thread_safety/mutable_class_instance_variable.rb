@@ -72,7 +72,8 @@ module RuboCop
       #       end
       #     end.freeze
       #   end
-      class MutableClassInstanceVariable < Cop
+      class MutableClassInstanceVariable < Base
+        extend AutoCorrector
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
 
@@ -108,23 +109,21 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
+        def autocorrect(corrector, node)
           expr = node.source_range
 
-          lambda do |corrector|
-            splat_value = splat_value(node)
-            if splat_value
-              correct_splat_expansion(corrector, expr, splat_value)
-            elsif node.array_type? && !node.bracketed?
-              corrector.insert_before(expr, '[')
-              corrector.insert_after(expr, ']')
-            elsif requires_parentheses?(node)
-              corrector.insert_before(expr, '(')
-              corrector.insert_after(expr, ')')
-            end
-
-            corrector.insert_after(expr, '.freeze')
+          splat_value = splat_value(node)
+          if splat_value
+            correct_splat_expansion(corrector, expr, splat_value)
+          elsif node.array_type? && !node.bracketed?
+            corrector.insert_before(expr, '[')
+            corrector.insert_after(expr, ']')
+          elsif requires_parentheses?(node)
+            corrector.insert_before(expr, '(')
+            corrector.insert_after(expr, ')')
           end
+
+          corrector.insert_after(expr, '.freeze')
         end
 
         private
@@ -152,7 +151,9 @@ module RuboCop
           return if operation_produces_threadsafe_object?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
         end
 
         def check(value)
@@ -160,7 +161,9 @@ module RuboCop
                         range_enclosed_in_parentheses?(value)
           return if frozen_string_literal?(value)
 
-          add_offense(value)
+          add_offense(value) do |corrector|
+            autocorrect(corrector, value)
+          end
         end
 
         def in_class?(node)

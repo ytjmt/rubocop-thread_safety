@@ -10,7 +10,7 @@ module RuboCop
       # @example
       #   # bad
       #   Thread.new { do_work }
-      class NewThread < Cop
+      class NewThread < Base
         MSG = 'Avoid starting new threads.'
         RESTRICT_ON_SEND = %i[new].freeze
 

@@ -5,5 +5,5 @@ appraise 'rubocop-0.86' do
 end
 
 appraise 'rubocop-1.20' do
-    gem 'rubocop', '~> 1.20.0'
+  gem 'rubocop', '~> 1.20.0'
 end

@@ -12,9 +12,6 @@ jobs:
       matrix:
         ruby: ["2.5", "2.6", "2.7", "3.0", "3.1", ruby-head, jruby-9.2, jruby-9.3]
         rubocop_version: ["0.86", "1.20"]
-        exclude:
-          - ruby: "2.4"
-            rubocop_version: "1.20"
     env:
       BUNDLE_GEMFILE: "gemfiles/rubocop_${{ matrix.rubocop_version }}.gemfile"
     steps:

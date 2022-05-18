@@ -99,19 +99,13 @@ module RuboCop
         end
 
         def in_defs?(node)
-          node.ancestors.any? do |ancestor|
-            ancestor.type == :defs
-          end
+          node.ancestors.any?(&:defs_type?)
         end
 
         def in_def_sclass?(node)
-          defn = node.ancestors.find do |ancestor|
-            ancestor.type == :def
-          end
+          defn = node.ancestors.find(&:def_type?)
 
-          defn&.ancestors&.any? do |ancestor|
-            ancestor.type == :sclass
-          end
+          defn&.ancestors&.any?(&:sclass_type?)
         end
 
         def in_def_class_methods?(node)

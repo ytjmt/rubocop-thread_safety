@@ -49,7 +49,7 @@ module RuboCop
           return unless mattr?(node) || class_attr?(node) ||
                         singleton_attr?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
 
         private

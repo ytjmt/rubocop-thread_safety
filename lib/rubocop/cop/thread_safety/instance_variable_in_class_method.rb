@@ -73,7 +73,7 @@ module RuboCop
           return if method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node.loc.name, message: MSG)
+          add_offense(node.loc.name)
         end
         alias on_ivasgn on_ivar
 
@@ -83,7 +83,7 @@ module RuboCop
           return if method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
 
         private

@@ -31,6 +31,10 @@ Style/AutoResourceCleanup:
 Style/CollectionMethods:
   Enabled: true
 
+Style/FormatStringToken:
+  Exclude:
+    - spec/**/*
+
 Style/FrozenStringLiteralComment:
   Exclude:
     - "gemfiles/*.gemfile"

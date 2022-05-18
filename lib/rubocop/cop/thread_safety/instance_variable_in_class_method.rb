@@ -60,10 +60,12 @@ module RuboCop
           instance_variable_get
         ].freeze
 
+        # @!method instance_variable_set_call?(node)
         def_node_matcher :instance_variable_set_call?, <<~MATCHER
           (send nil? :instance_variable_set (...) (...))
         MATCHER
 
+        # @!method instance_variable_get_call?(node)
         def_node_matcher :instance_variable_get_call?, <<~MATCHER
           (send nil? :instance_variable_get (...))
         MATCHER
@@ -167,10 +169,12 @@ module RuboCop
           arg_name.to_sym == method_name.to_sym
         end
 
+        # @!method class_methods_module?(node)
         def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)
         PATTERN
 
+        # @!method module_function_for?(node)
         def_node_matcher :module_function_for?, <<~PATTERN
           (send nil? {:module_function} ({sym str} #match_name?(%1)))
         PATTERN

@@ -209,20 +209,24 @@ module RuboCop
           end
         end
 
+        # @!method define_singleton_method?(node)
         def_node_matcher :define_singleton_method?, <<~PATTERN
           (block (send nil? :define_singleton_method ...) ...)
         PATTERN
 
+        # @!method define_method?(node)
         def_node_matcher :define_method?, <<~PATTERN
           (block (send nil? :define_method ...) ...)
         PATTERN
 
+        # @!method splat_value(node)
         def_node_matcher :splat_value, <<~PATTERN
           (array (splat $_))
         PATTERN
 
         # NOTE: Some of these patterns may not actually return an immutable
         # object but we will consider them immutable for this cop.
+        # @!method operation_produces_immutable_object?(node)
         def_node_matcher :operation_produces_immutable_object?, <<~PATTERN
           {
             (const _ _)
@@ -239,6 +243,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method operation_produces_threadsafe_object?(node)
         def_node_matcher :operation_produces_threadsafe_object?, <<~PATTERN
           {
             (send (const {nil? cbase} :Queue) :new ...)
@@ -271,6 +276,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method range_enclosed_in_parentheses?(node)
         def_node_matcher :range_enclosed_in_parentheses?, <<~PATTERN
           (begin ({irange erange} _ _))
         PATTERN

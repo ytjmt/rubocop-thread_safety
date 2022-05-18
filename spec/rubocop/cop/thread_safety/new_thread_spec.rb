@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::ThreadSafety::NewThread do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::ThreadSafety::NewThread, :config do
   it 'registers an offense for starting a new thread' do
     expect_offense(<<~RUBY)
       Thread.new { do_work }

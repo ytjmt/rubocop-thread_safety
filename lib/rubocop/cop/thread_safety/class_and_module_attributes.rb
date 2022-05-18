@@ -12,7 +12,7 @@ module RuboCop
       #   class User
       #     cattr_accessor :current_user
       #   end
-      class ClassAndModuleAttributes < Cop
+      class ClassAndModuleAttributes < Base
         MSG = 'Avoid mutating class and module attributes.'
         RESTRICT_ON_SEND = %i[
           mattr_writer mattr_accessor cattr_writer cattr_accessor

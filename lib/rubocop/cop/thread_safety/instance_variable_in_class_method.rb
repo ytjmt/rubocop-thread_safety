@@ -53,7 +53,7 @@ module RuboCop
       #
       #     module_function :test
       #   end
-      class InstanceVariableInClassMethod < Cop
+      class InstanceVariableInClassMethod < Base
         MSG = 'Avoid instance variables in class methods.'
         RESTRICT_ON_SEND = %i[
           instance_variable_set
@@ -73,7 +73,7 @@ module RuboCop
           return if method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node, location: :name, message: MSG)
+          add_offense(node.loc.name, message: MSG)
         end
         alias on_ivasgn on_ivar
 

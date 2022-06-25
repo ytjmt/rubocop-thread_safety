@@ -14,6 +14,7 @@ module RuboCop
         MSG = 'Avoid starting new threads.'
         RESTRICT_ON_SEND = %i[new].freeze
 
+        # @!method new_thread?(node)
         def_node_matcher :new_thread?, <<~MATCHER
           (send (const {nil? cbase} :Thread) :new)
         MATCHER
@@ -21,7 +22,7 @@ module RuboCop
         def on_send(node)
           return unless new_thread?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
       end
     end

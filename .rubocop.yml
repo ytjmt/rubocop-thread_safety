@@ -1,3 +1,8 @@
+inherit_from: .rubocop_todo.yml
+
+require:
+  - rubocop/cop/internal_affairs
+
 AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.5

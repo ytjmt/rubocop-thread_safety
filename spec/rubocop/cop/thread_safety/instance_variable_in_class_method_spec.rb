@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod, :config do
   it 'registers an offense for assigning to an ivar in a class method' do
     expect_offense(<<~RUBY)
       class Test

@@ -21,24 +21,28 @@ module RuboCop
           attr_internal attr_internal_accessor attr_internal_writer
         ].freeze
 
+        # @!method mattr?(node)
         def_node_matcher :mattr?, <<~MATCHER
           (send nil?
             {:mattr_writer :mattr_accessor :cattr_writer :cattr_accessor}
             ...)
         MATCHER
 
+        # @!method attr?(node)
         def_node_matcher :attr?, <<~MATCHER
           (send nil?
             {:attr :attr_accessor :attr_writer}
             ...)
         MATCHER
 
+        # @!method attr_internal?(node)
         def_node_matcher :attr_internal?, <<~MATCHER
           (send nil?
             {:attr_internal :attr_internal_accessor :attr_internal_writer}
             ...)
         MATCHER
 
+        # @!method class_attr?(node)
         def_node_matcher :class_attr?, <<~MATCHER
           (send nil?
             :class_attribute
@@ -49,7 +53,7 @@ module RuboCop
           return unless mattr?(node) || class_attr?(node) ||
                         singleton_attr?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
 
         private

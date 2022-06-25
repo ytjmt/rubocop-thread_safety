@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::ThreadSafety::ClassAndModuleAttributes, :config do
   let(:msg) { 'Avoid mutating class and module attributes.' }
 
   context 'when in the singleton class' do

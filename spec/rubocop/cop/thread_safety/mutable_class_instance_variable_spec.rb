@@ -2,7 +2,6 @@
 
 RSpec.describe RuboCop::Cop::ThreadSafety::MutableClassInstanceVariable,
                :config do
-  subject(:cop) { described_class.new(config) }
   let(:msg) { 'Freeze mutable objects assigned to class instance variables.' }
   let(:prefix) { nil }
   let(:suffix) { nil }

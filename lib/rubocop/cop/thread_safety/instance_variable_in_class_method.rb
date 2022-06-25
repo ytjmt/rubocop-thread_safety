@@ -60,10 +60,12 @@ module RuboCop
           instance_variable_get
         ].freeze
 
+        # @!method instance_variable_set_call?(node)
         def_node_matcher :instance_variable_set_call?, <<~MATCHER
           (send nil? :instance_variable_set (...) (...))
         MATCHER
 
+        # @!method instance_variable_get_call?(node)
         def_node_matcher :instance_variable_get_call?, <<~MATCHER
           (send nil? :instance_variable_get (...))
         MATCHER
@@ -73,7 +75,7 @@ module RuboCop
           return if method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node.loc.name, message: MSG)
+          add_offense(node.loc.name)
         end
         alias on_ivasgn on_ivar
 
@@ -83,7 +85,7 @@ module RuboCop
           return if method_definition?(node)
           return if synchronized?(node)
 
-          add_offense(node, message: MSG)
+          add_offense(node)
         end
 
         private
@@ -99,19 +101,13 @@ module RuboCop
         end
 
         def in_defs?(node)
-          node.ancestors.any? do |ancestor|
-            ancestor.type == :defs
-          end
+          node.ancestors.any?(&:defs_type?)
         end
 
         def in_def_sclass?(node)
-          defn = node.ancestors.find do |ancestor|
-            ancestor.type == :def
-          end
+          defn = node.ancestors.find(&:def_type?)
 
-          defn&.ancestors&.any? do |ancestor|
-            ancestor.type == :sclass
-          end
+          defn&.ancestors&.any?(&:sclass_type?)
         end
 
         def in_def_class_methods?(node)
@@ -173,10 +169,12 @@ module RuboCop
           arg_name.to_sym == method_name.to_sym
         end
 
+        # @!method class_methods_module?(node)
         def_node_matcher :class_methods_module?, <<~PATTERN
           (module (const _ :ClassMethods) ...)
         PATTERN
 
+        # @!method module_function_for?(node)
         def_node_matcher :module_function_for?, <<~PATTERN
           (send nil? {:module_function} ({sym str} #match_name?(%1)))
         PATTERN

@@ -119,17 +119,7 @@ module RuboCop
         end
 
         def in_def_class_methods?(node)
-          return true if in_def_class_methods_dsl?(node)
-
-          defn = node.ancestors.find(&:def_type?)
-          return unless defn
-
-          mod = defn.ancestors.find do |ancestor|
-            %i[class module].include?(ancestor.type)
-          end
-          return unless mod
-
-          class_methods_module?(mod)
+          in_def_class_methods_dsl?(node) || in_def_class_methods_module?(node)
         end
 
         def in_def_class_methods_dsl?(node)
@@ -139,6 +129,18 @@ module RuboCop
 
             ancestor.children.first.command? :class_methods
           end
+        end
+
+        def in_def_class_methods_module?(node)
+          defn = node.ancestors.find(&:def_type?)
+          return unless defn
+
+          mod = defn.ancestors.find do |ancestor|
+            %i[class module].include?(ancestor.type)
+          end
+          return unless mod
+
+          class_methods_module?(mod)
         end
 
         def in_def_module_function?(node)

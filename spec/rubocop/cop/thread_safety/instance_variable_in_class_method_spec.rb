@@ -71,6 +71,19 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod, :confi
     RUBY
   end
 
+  it 'registers an offense for assigning an ivar in class_methods' do
+    expect_offense(<<~RUBY)
+      module Test
+        class_methods do
+          def some_method(params)
+            @params = params
+            ^^^^^^^ Avoid instance variables in class methods.
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense for assigning an ivar in a class singleton method' do
     expect_offense(<<~RUBY)
       class Test
@@ -125,6 +138,19 @@ RSpec.describe RuboCop::Cop::ThreadSafety::InstanceVariableInClassMethod, :confi
         def some_method(params)
           instance_variable_set(:@params, params)
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid instance variables in class methods.
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for ivar_set in class_methods' do
+    expect_offense(<<~RUBY)
+      module Test
+        class_methods do
+          def some_method(params)
+            instance_variable_set(:@params, params)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid instance variables in class methods.
+          end
         end
       end
     RUBY

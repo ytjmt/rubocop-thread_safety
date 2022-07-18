@@ -39,6 +39,14 @@ module RuboCop
       #   end
       #
       #   module Example
+      #     class_methods do
+      #       def test(params)
+      #         @params = params
+      #       end
+      #     end
+      #   end
+      #
+      #   module Example
       #     module_function
       #
       #     def test(params)
@@ -111,6 +119,8 @@ module RuboCop
         end
 
         def in_def_class_methods?(node)
+          return true if in_def_class_methods_dsl?(node)
+
           defn = node.ancestors.find(&:def_type?)
           return unless defn
 
@@ -120,6 +130,15 @@ module RuboCop
           return unless mod
 
           class_methods_module?(mod)
+        end
+
+        def in_def_class_methods_dsl?(node)
+          node.ancestors.any? do |ancestor|
+            next unless ancestor.block_type?
+            next unless ancestor.children.first.is_a? AST::SendNode
+
+            ancestor.children.first.command? :class_methods
+          end
         end
 
         def in_def_module_function?(node)

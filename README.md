@@ -72,7 +72,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ruboco
 
 ## Copyright
 
-Portions Copyright (c) 2016-2022 Michael Gee and [contributors](https://github.com/rubocop/rubocop-thread_safety/graphs/contributors).
-Portions Copyright (c) 2016-2022 CoverMyMeds.
+Portions Copyright (c) 2016-2023 Michael Gee and [contributors](https://github.com/rubocop/rubocop-thread_safety/graphs/contributors).
+Portions Copyright (c) 2016-2023 CoverMyMeds.
 
 See [LICENSE.txt](LICENSE.txt) for further details.

@@ -181,7 +181,7 @@ module RuboCop
         end
 
         def module_function_bare_access_modifier?(node)
-          return false unless node
+          return false unless node.respond_to?(:send_type?)
 
           node.send_type? && node.bare_access_modifier? && node.method?(:module_function)
         end

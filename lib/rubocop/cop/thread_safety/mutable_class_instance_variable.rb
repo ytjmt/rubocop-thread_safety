@@ -84,22 +84,20 @@ module RuboCop
         def on_ivasgn(node)
           return unless in_class?(node)
 
-          _, value = *node
-          on_assignment(value)
+          on_assignment(node.expression)
         end
 
         def on_or_asgn(node)
-          lhs, value = *node
-          return unless lhs&.ivasgn_type?
+          return unless node.assignment_node&.ivasgn_type?
           return unless in_class?(node)
 
-          on_assignment(value)
+          on_assignment(node.expression)
         end
 
         def on_masgn(node)
           return unless in_class?(node)
 
-          mlhs, values = *node
+          mlhs, values = *node # rubocop:disable InternalAffairs/NodeDestructuring
           return unless values.array_type?
 
           mlhs.to_a.zip(values.to_a).each do |lhs, value|

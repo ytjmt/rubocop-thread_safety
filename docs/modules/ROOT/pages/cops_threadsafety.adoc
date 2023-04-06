@@ -1,0 +1,228 @@
+= ThreadSafety
+
+== ThreadSafety/ClassAndModuleAttributes
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| -
+| -
+|===
+
+Avoid mutating class and module attributes.
+
+They are implemented by class variables, which are not thread-safe.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class User
+  cattr_accessor :current_user
+end
+----
+
+== ThreadSafety/InstanceVariableInClassMethod
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| -
+| -
+|===
+
+Avoid instance variables in class methods.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class User
+  def self.notify(info)
+    @info = validate(info)
+    Notifier.new(@info).deliver
+  end
+end
+
+class Model
+  class << self
+    def table_name(name)
+      @table_name = name
+    end
+  end
+end
+
+class Host
+  %i[uri port].each do |key|
+    define_singleton_method("#{key}=") do |value|
+      instance_variable_set("@#{key}", value)
+    end
+  end
+end
+
+module Example
+  module ClassMethods
+    def test(params)
+      @params = params
+    end
+  end
+end
+
+module Example
+  class_methods do
+    def test(params)
+      @params = params
+    end
+  end
+end
+
+module Example
+  module_function
+
+  def test(params)
+    @params = params
+  end
+end
+
+module Example
+  def test(params)
+    @params = params
+  end
+
+  module_function :test
+end
+----
+
+== ThreadSafety/MutableClassInstanceVariable
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| Yes (Unsafe)
+| -
+| -
+|===
+
+Checks whether some class instance variable isn't a
+mutable literal (e.g. array or hash).
+
+It is based on Style/MutableConstant from RuboCop.
+See https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/cop/style/mutable_constant.rb
+
+Class instance variables are a risk to threaded code as they are shared
+between threads. A mutable object such as an array or hash may be
+updated via an attr_reader so would not be detected by the
+ThreadSafety/ClassAndModuleAttributes cop.
+
+Strict mode can be used to freeze all class instance variables, rather
+than just literals.
+Strict mode is considered an experimental feature. It has not been
+updated with an exhaustive list of all methods that will produce frozen
+objects so there is a decent chance of getting some false positives.
+Luckily, there is no harm in freezing an already frozen object.
+
+=== Examples
+
+==== EnforcedStyle: literals (default)
+
+[source,ruby]
+----
+# bad
+class Model
+  @list = [1, 2, 3]
+end
+
+# good
+class Model
+  @list = [1, 2, 3].freeze
+end
+
+# good
+class Model
+  @var = <<~TESTING.freeze
+    This is a heredoc
+  TESTING
+end
+
+# good
+class Model
+  @var = Something.new
+end
+----
+
+==== EnforcedStyle: strict
+
+[source,ruby]
+----
+# bad
+class Model
+  @var = Something.new
+end
+
+# bad
+class Model
+  @var = Struct.new do
+    def foo
+      puts 1
+    end
+  end
+end
+
+# good
+class Model
+  @var = Something.new.freeze
+end
+
+# good
+class Model
+  @var = Struct.new do
+    def foo
+      puts 1
+    end
+  end.freeze
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `literals`
+| `literals`, `strict`
+|===
+
+== ThreadSafety/NewThread
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| -
+| -
+|===
+
+Avoid starting new threads.
+
+Let a framework like Sidekiq handle the threads.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Thread.new { do_work }
+----

@@ -77,3 +77,6 @@ Style/StringMethods:
 
 Style/SymbolArray:
   Enabled: true
+
+RSpec/ExampleLength:
+  Max: 11
